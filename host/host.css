@@ -1,0 +1,125 @@
+:root {
+    --bg: #111;
+    --bg2: #1a1a1a;
+    --fg: #fff;
+    --borderDefault: 1px solid var(--fg);
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--fg);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    /* z-index: -1; */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    font-family: 'Montserrat';
+}
+
+textarea:focus,
+input:focus {
+    outline: none;
+}
+
+#server-main,
+#server-monitor,
+#server-controls,
+.player {
+    display: flex;
+    border: var(--borderDefault);
+}
+
+#server-main {
+    height: 100vh;
+    width: 100vw;
+    flex-direction: column;
+}
+
+#server-monitor {
+    flex-basis: 80%;
+    flex-direction: column;
+    align-items: center;
+}
+
+.player {
+    flex-grow: 1;
+    width: 100%;
+    border: none;
+    flex-direction: column;
+    padding: 2vh 2vw;
+}
+
+.player div {
+    padding: 1vh 1vw;
+}
+
+.player-name {
+    flex-basis: 10%;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.player-time {
+    flex-basis: 10%;
+    font-size: 0.9rem;
+}
+
+.player-answer {
+    font-size: 2rem;
+}
+
+#server-controls {
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    border-top: none;
+    font-weight: bold;
+}
+
+#server-controls div {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+#server-controls div:hover {
+    background-color: var(--bg2);
+}
+
+#server-controls div span {
+    text-align: center;
+    width: 100%;
+    border-left: var(--borderDefault);
+}
+
+#server-controls div:first-child span {
+    border: none;
+}
+
+#server-input-box {
+    padding: 0.75em 1em;
+    box-sizing: border-box;
+    outline: none;
+    border: none;
+
+    background-color: var(--bg);
+    color: var(--fg);
+
+    text-align: center;
+    font-size: 3rem;
+
+    display: none;
+
+}
+

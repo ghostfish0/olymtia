@@ -1,0 +1,76 @@
+:root {
+    --bg: #111;
+    --bg2: #1a1a1a;
+    --fg: #fff;
+    --borderDefault: 1px solid var(--fg);
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--fg);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    /* z-index: -1; */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    font-family: 'Montserrat';
+}
+
+textarea:focus, input:focus{
+    outline: none;
+}
+
+#welcome {
+    font-size: 5vw;
+    font-weight: bolder;
+    text-transform: uppercase;
+}
+
+#player-name {
+    position: fixed;
+    bottom: 5vh;
+    left: 5vh;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+#answer-box {
+    width: 100vw;
+    padding: 0.75em 1em;
+    box-sizing: border-box;
+    margin-bottom: 1em;
+    
+    outline: none;
+    border: none;
+
+    background-color: var(--bg); 
+    color: var(--fg);
+    
+    text-align: center;
+    font-family: inherit;
+    font-size: 3rem;
+
+}
+
+#input-container {
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+#input-container img {
+    position: absolute;
+}
+
+#bloated {
+    visibility: hidden;
+}
