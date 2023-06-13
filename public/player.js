@@ -44,7 +44,7 @@ function loginPlayer(data) {
           document.getElementById("bloated").style.visibility = "visible";
           setTimeout(() => {
             document.getElementById("bloated").style.visibility = "hidden";
-          }, 100);
+          }, 5);
         });
         break;
       case "qna":

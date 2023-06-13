@@ -40,7 +40,6 @@ io.of("/host").on("connection", (socket) => {
 
   gameInProgress = false;
   socket.on("game-event", (gameStatus) => {
-    console.log(gameStatus, gameInProgress);
     if (gameStatus != "stop") {
       if (!gameInProgress)
         io.of("/player").emit("game-event", gameStatus);
@@ -60,8 +59,8 @@ io.of("/host").on("connection", (socket) => {
 
 //Player socket configuration
 io.of("player").on("connection", (socket) => {
-  
   if (io.engine.clientsCount > 5 || gameInProgress) {
+    console.log(io.engine.clientsCount); 
     socket.disconnect(); // disconnect the 5th and onward clients
     console.log(`Client ${socket.id} tried to connect`);
     return;
@@ -71,7 +70,7 @@ io.of("player").on("connection", (socket) => {
   
   io.of("/host").emit("player-connected", socket.id);
   
-  players[socket.id] = {
+;  players[socket.id] = {
     name: "",
     time: Infinity,
     ans: "",
