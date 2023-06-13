@@ -24,17 +24,33 @@ http.listen(port, () => {
   console.log(`Server is active at port:${port}`);
 });
 
-const answers = {};
-let adminID = "";
+const players = {};
+let startTime = new Date();
+let gameInProgress = false;
 
 //Host socket configuration
 io.of("/host").on("connection", (socket) => {
   console.log(`Host ${socket.id} connected`);
-  adminID = socket.id;
 
   // On receiving the player's name from the host UI, login that player
   socket.on("login", (playerName, playerSocketID) => {
+    players[playerSocketID].name = playerName;
     io.of("/player").to(playerSocketID).emit("login", playerName);
+  });
+
+  gameInProgress = false;
+  socket.on("game-event", (gameStatus) => {
+    console.log(gameStatus, gameInProgress);
+    if (gameStatus != "stop") {
+      if (!gameInProgress)
+        io.of("/player").emit("game-event", gameStatus);
+      startTime = new Date(); // starts clock
+      gameInProgress = true;
+    }
+    else {
+      io.of("/player").emit("game-event", "stop");
+      gameInProgress = false;
+    }
   })
   
   socket.on("disconnect", () => {
@@ -44,18 +60,35 @@ io.of("/host").on("connection", (socket) => {
 
 //Player socket configuration
 io.of("player").on("connection", (socket) => {
-  // Everytime a player connects, print a notification
   
-  if (io.engine.clientsCount > 5) {
+  if (io.engine.clientsCount > 5 || gameInProgress) {
     socket.disconnect(); // disconnect the 5th and onward clients
-    console.log(`Client tried to ${socket.id} connect`);
+    console.log(`Client ${socket.id} tried to connect`);
     return;
   }
+  // Notifies verytime a player connects
   console.log(`Client ${socket.id} connected`);
-
+  
   io.of("/host").emit("player-connected", socket.id);
   
-  answers[socket.id] = "";
+  players[socket.id] = {
+    name: "",
+    time: Infinity,
+    ans: "",
+    id: socket.id,
+  }
+
+  socket.on("updateSpam", () => {
+    players[socket.id].time = (new Date() - startTime) / 1000;
+    players[socket.id].ans = "";
+    io.of("/host").emit("player-update", players[socket.id]);
+  });
+
+  socket.on("updateQnA", (ans) => {
+    players[socket.id].ans = ans;
+    players[socket.id].time = (new Date() - startTime) / 1000;
+    io.of("/host").emit("player-update", players[socket.id]);
+  })
   
   socket.on("disconnect", () => {
     console.log(`Client ${socket.id} disconnected`);

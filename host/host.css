@@ -48,6 +48,8 @@ input:focus {
     flex-basis: 80%;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    padding: 2vh 1vw;
 }
 
 .player {
@@ -59,7 +61,7 @@ input:focus {
 }
 
 .player div {
-    padding: 1vh 1vw;
+    padding: 0.5vh 1vw;
 }
 
 .player-name {
@@ -83,6 +85,7 @@ input:focus {
     align-items: center;
     border-top: none;
     font-weight: bold;
+    user-select: none;
 }
 
 #server-controls div {

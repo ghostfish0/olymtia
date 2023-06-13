@@ -29,18 +29,16 @@ textarea:focus, input:focus{
     outline: none;
 }
 
-#welcome {
+#game-spam {
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+#welcome, #player-name {
     font-size: 5vw;
     font-weight: bolder;
     text-transform: uppercase;
-}
-
-#player-name {
-    position: fixed;
-    bottom: 5vh;
-    left: 5vh;
-    text-transform: uppercase;
-    font-weight: bold;
 }
 
 #answer-box {
@@ -59,18 +57,21 @@ textarea:focus, input:focus{
     font-family: inherit;
     font-size: 3rem;
 
+    display: none;
 }
 
 #input-container {
-    display: none;
     justify-content: center;
     align-items: center;
 }
 
-#input-container img {
+#input-container span {
     position: absolute;
+    user-select: none;
+    cursor: grab;
 }
 
 #bloated {
     visibility: hidden;
+    cursor: grabbing;
 }
