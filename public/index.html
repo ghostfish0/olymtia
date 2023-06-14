@@ -9,21 +9,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/p5.min.js"></script>
   </head>
   <body>
-    <div id="welcome">
-    </div>
+    <div id="banner"> </div>
     <div id="game">
-      <div id="client">
-        <div id="player-name"></div>
-        <div id="input-container">
-          <div id="game-qna">
-            <input  type="text" 
-                    id="answer-box">
-          </div>
-          <div id="game-spam">
-            <span id="unbloat" style="font-size: 15em">🐧</span>
-            <span id="bloated" style="font-size: 30em;">🐧</span>
-          </div>
+      <div id="game-qna">
+        <div id="history-qna">
+          <div id="history-qna-1"></div>
+          <div id="history-qna-2"></div>
+          <div id="history-qna-3"></div>
         </div>
+        <input  type="text" id="input-qna">
+      </div>
+      <div id="game-spam">
+        <span id="unbloat" style="font-size: 15em">🐧</span>
+        <span id="bloated" style="font-size: 30em;">🐧</span>
       </div>
     </div>
     <script src="/socket.io/socket.io.js"></script>

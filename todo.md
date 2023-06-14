@@ -1,0 +1,1 @@
+rename public folder to player folder
