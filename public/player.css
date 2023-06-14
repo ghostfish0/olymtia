@@ -1,7 +1,6 @@
 :root {
-    --bg: #111;
-    --bg2: #1a1a1a;
-    --fg: #fff;
+    --fg: #111;
+    --bg: #fff;
     --fg2: #bbb;
     --borderDefault: 1px solid var(--fg);
 }    

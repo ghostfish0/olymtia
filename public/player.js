@@ -69,27 +69,31 @@ socket.on("connect", () => {
         history_qna.style.display = "none";
         input_qna.blur();
         spam_box.style.display = "flex";
+        document.documentElement.style.setProperty('--fg', '#fff');
+        document.documentElement.style.setProperty('--bg', '#111');
         
         // spam mechanics
         let spammed = false;
         document.getElementById("unbloat").addEventListener("mousedown", (e) => {
           if (!spammed) 
-            socket.emit("player-update", " ");
+          socket.emit("player-update", " ");
           spammed = true;
           document.getElementById("bloated").style.visibility = "visible";
           setTimeout(() => {
             document.getElementById("bloated").style.visibility = "hidden";
           }, 25);
         });
-
+        
         break;
-      case "qna":
+        case "qna":
         // hide spam box and show input box 
         spam_box.style.display = "none";
         input_qna.style.display = "flex";
         history_qna.style.display = "block";
         input_qna.focus();
-
+        document.documentElement.style.setProperty('--fg', '#fff');
+        document.documentElement.style.setProperty('--bg', '#111');
+        
         // submit the answer when enter key is pressed
         input_qna.addEventListener("keydown", (e) => {
           if (e.key == 'Enter' && input_qna.value != "") {
@@ -103,6 +107,8 @@ socket.on("connect", () => {
         });
         break;
         case "stop":
+          document.documentElement.style.setProperty('--bg', '#fff');
+          document.documentElement.style.setProperty('--fg', '#111');
           input_qna.value = "";
           input_qna.style.display = "none";
           history_qna.style.display = "none";
@@ -110,12 +116,14 @@ socket.on("connect", () => {
           spam_box.style.display = "none";
           banner.style.display = "flex"; 
           break;
-      }
+        }
+      });
+      
     });
     
-});
-
-socket.on("connect_error", () => {
+    socket.on("connect_error", () => {
+  document.documentElement.style.setProperty('--fg', '#fff');
+  document.documentElement.style.setProperty('--bg', '#111');
   input_qna.style.display = "none";
   spam_box.style.display = "none";
   history_qna.style.display = "none";
@@ -124,6 +132,8 @@ socket.on("connect_error", () => {
   banner.style.display = "flex";
 });
 socket.on("disconnect", () => {
+  document.documentElement.style.setProperty('--fg', '#fff');
+  document.documentElement.style.setProperty('--bg', '#111');
   input_qna.style.display = "none";
   spam_box.style.display = "none";
   history_qna.style.display = "none";
