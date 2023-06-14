@@ -2,13 +2,14 @@
     --bg: #111;
     --bg2: #1a1a1a;
     --fg: #fff;
+    --fg2: #bbb;
     --borderDefault: 1px solid var(--fg);
-}
+}    
 
 body {
     background-color: var(--bg);
     color: var(--fg);
-
+    
     display: flex;
     align-items: center;
     justify-content: center;
@@ -21,27 +22,27 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-
+    
     font-family: 'Montserrat';
-}
+}        
 
 textarea:focus, input:focus{
     outline: none;
-}
+}        
 
-#game-spam {
-    display: none;
-    justify-content: center;
-    align-items: center;
-}
-
-#welcome, #player-name {
+#banner {
     font-size: 5vw;
     font-weight: bolder;
     text-transform: uppercase;
-}
+    display: none;
+}    
 
-#answer-box {
+
+#game {
+    justify-content: center;
+    align-items: center;
+}    
+#input-qna {
     width: 100vw;
     padding: 0.75em 1em;
     box-sizing: border-box;
@@ -54,24 +55,36 @@ textarea:focus, input:focus{
     color: var(--fg);
     
     text-align: center;
-    font-family: inherit;
+    font-family: 'Montserrat';
     font-size: 3rem;
+    text-transform: uppercase;
 
+    display: none;
+}        
+
+#history-qna {
     display: none;
 }
 
-#input-container {
+#history-qna div {
+    margin: 1vw 0;
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--fg2);
+    
+}
+#game-spam {
+    display: none;
     justify-content: center;
     align-items: center;
-}
-
-#input-container span {
+}        
+#game-spam span {
     position: absolute;
     user-select: none;
     cursor: grab;
-}
+}        
 
 #bloated {
     visibility: hidden;
     cursor: grabbing;
-}
+}    

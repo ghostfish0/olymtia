@@ -66,7 +66,6 @@ input:focus {
 
 .player-name {
     flex-basis: 10%;
-    text-transform: uppercase;
     font-weight: 600;
 }
 

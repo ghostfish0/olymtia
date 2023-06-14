@@ -5,6 +5,7 @@ const io = require("socket.io")(http, {
   transports: ["websocket"] //set to use websocket only
 }); //this loads socket.io and connects it to the server.
 
+
 const port = process.env.PORT || 8080;
 
 //this next line makes sure we can put all our html/css/javascript in the public directory
@@ -24,6 +25,11 @@ http.listen(port, () => {
   console.log(`Server is active at port:${port}`);
 });
 
+const { InMemorySessionStore } = require("./sessionStore");
+const sessionStore = new InMemorySessionStore();
+
+const randomId = () => require("crypto").randomBytes(8).toString("hex");
+
 const players = {};
 let startTime = new Date();
 let gameInProgress = false;
@@ -31,12 +37,6 @@ let gameInProgress = false;
 //Host socket configuration
 io.of("/host").on("connection", (socket) => {
   console.log(`Host ${socket.id} connected`);
-
-  // On receiving the player's name from the host UI, login that player
-  socket.on("login", (playerName, playerSocketID) => {
-    players[playerSocketID].name = playerName;
-    io.of("/player").to(playerSocketID).emit("login", playerName);
-  });
 
   gameInProgress = false;
   socket.on("game-event", (gameStatus) => {
@@ -57,41 +57,63 @@ io.of("/host").on("connection", (socket) => {
   });
 })
 
-//Player socket configuration
-io.of("player").on("connection", (socket) => {
-  if (io.engine.clientsCount > 5 || gameInProgress) {
+//Player authorization 
+io.of("/player").use((socket, next) => {
+  if (io.of("/player").length > 4 || gameInProgress) {
     console.log(io.engine.clientsCount); 
-    socket.disconnect(); // disconnect the 5th and onward clients
-    console.log(`Client ${socket.id} tried to connect`);
-    return;
+    console.log(`Player ${socket.id} tried to connect, room full!`);
+    return next(new Error("room full")); // block the 5th and onward clients
   }
-  // Notifies verytime a player connects
-  console.log(`Client ${socket.id} connected`);
+
+  console.log("connection attempt");
+  const playername = socket.handshake.auth.playername;
+  const sessionID = socket.handshake.auth.sessionID;
+  if (sessionID) {
+    const session = sessionStore.findSession(sessionID);
+    if (session) {
+      socket.sessionID = sessionID;
+      socket.playername = session.playername;
+      return next();
+    }
+  }
   
-  io.of("/host").emit("player-connected", socket.id);
+  if (!playername) {
+    console.log(`Player ${socket.id} tried to connect, no valid username or session id!`);
+    return next(new Error("invalid playername"));
+  }
+  socket.playername = playername;
+  socket.sessionID = randomId();
+
+  next();
+});
+
+// On successful player login
+io.of("/player").on("connection", (socket) => {
+  // Notifies everytime a player connects
+  console.log(`Player ${socket.id} connected ${socket.playername}, ${socket.sessionID}`);
   
-;  players[socket.id] = {
-    name: "",
-    time: Infinity,
+  const sessionID = socket.sessionID;
+
+  socket.emit("session", sessionID);
+  
+  players[sessionID] = {
+    name: socket.handshake.auth.playername,
+    time: "",
     ans: "",
-    id: socket.id,
+    id: sessionID,
   }
 
-  socket.on("updateSpam", () => {
-    players[socket.id].time = (new Date() - startTime) / 1000;
-    players[socket.id].ans = "";
-    io.of("/host").emit("player-update", players[socket.id]);
-  });
-
-  socket.on("updateQnA", (ans) => {
-    players[socket.id].ans = ans;
-    players[socket.id].time = (new Date() - startTime) / 1000;
-    io.of("/host").emit("player-update", players[socket.id]);
+  io.of("/host").emit("player-connected", sessionID, players[sessionID].name);
+  
+  socket.on("player-update", (ans) => {
+    players[sessionID].ans = ans;
+    players[sessionID].time = (new Date() - startTime) / 1000;
+    io.of("/host").emit("player-update", players[sessionID]);
   })
   
   socket.on("disconnect", () => {
-    console.log(`Client ${socket.id} disconnected`);
-    io.of("/host").emit("player-disconnected", socket.id);
+    console.log(`Player ${sessionID} disconnected`);
+    io.of("/host").emit("player-disconnected", sessionID);
   });
   
 });
