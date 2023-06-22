@@ -1,6 +1,6 @@
 :root {
-    --fg: #111;
-    --bg: #fff;
+    --bg: #111;
+    --fg: #fff;
     --fg2: #bbb;
     --borderDefault: 1px solid var(--fg);
 }    
@@ -30,22 +30,19 @@ textarea:focus, input:focus{
 }        
 
 #banner {
-    font-size: 5vw;
-    font-weight: bolder;
+    font-size: 3rem;
     text-transform: uppercase;
     display: none;
+    user-select: none;
 }    
-
 
 #game {
     justify-content: center;
     align-items: center;
 }    
 #input-qna {
-    width: 100vw;
-    padding: 0.75em 1em;
+    padding: 1rem 0;
     box-sizing: border-box;
-    margin-bottom: 1em;
     
     outline: none;
     border: none;
@@ -72,18 +69,22 @@ textarea:focus, input:focus{
     color: var(--fg2);
     
 }
+
 #game-spam {
     display: none;
     justify-content: center;
     align-items: center;
 }        
 #game-spam span {
+    font-size: 15em;
     position: absolute;
     user-select: none;
     cursor: grab;
 }        
 
-#bloated {
-    visibility: hidden;
-    cursor: grabbing;
-}    
+.minispam {
+    transform-origin: bottom right;
+    transform: scale(0.2);
+    right: 1.5vw;
+    bottom: 1.5vw; 
+}

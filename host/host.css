@@ -67,6 +67,8 @@ input:focus {
 .player-name {
     flex-basis: 10%;
     font-weight: 600;
+    color: var(--bg);
+    background-color: var(--fg);
 }
 
 .player-time {

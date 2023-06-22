@@ -32,23 +32,19 @@ const randomId = () => require("crypto").randomBytes(8).toString("hex");
 
 const players = {};
 let startTime = new Date();
-let gameInProgress = false;
 
 //Host socket configuration
 io.of("/host").on("connection", (socket) => {
   console.log(`Host ${socket.id} connected`);
 
-  gameInProgress = false;
   socket.on("game-event", (gameStatus) => {
     if (gameStatus != "stop") {
       if (!gameInProgress)
         io.of("/player").emit("game-event", gameStatus);
       startTime = new Date(); // starts clock
-      gameInProgress = true;
     }
     else {
       io.of("/player").emit("game-event", "stop");
-      gameInProgress = false;
     }
   })
   
@@ -59,12 +55,6 @@ io.of("/host").on("connection", (socket) => {
 
 //Player authorization 
 io.of("/player").use((socket, next) => {
-  if (io.of("/player").length > 4 || gameInProgress) {
-    console.log(io.engine.clientsCount); 
-    console.log(`Player ${socket.id} tried to connect, room full!`);
-    return next(new Error("room full")); // block the 5th and onward clients
-  }
-
   console.log("connection attempt");
   const playername = socket.handshake.auth.playername;
   const sessionID = socket.handshake.auth.sessionID;
@@ -76,14 +66,19 @@ io.of("/player").use((socket, next) => {
       return next();
     }
   }
+
+  if (Object.keys(players).length > 4) {
+    console.log(`Player ${socket.id} tried to connect, room full!`);
+    return next(new Error("room full")); // block the 5th and onward clients
+  }
   
   if (!playername) {
     console.log(`Player ${socket.id} tried to connect, no valid username or session id!`);
     return next(new Error("invalid playername"));
   }
-  socket.playername = playername;
   socket.sessionID = randomId();
-
+  socket.playername = playername;
+  
   next();
 });
 
@@ -112,6 +107,9 @@ io.of("/player").on("connection", (socket) => {
   })
   
   socket.on("disconnect", () => {
+    sessionStore.saveSession(socket.sessionID, {
+      playername: socket.playername
+    });   
     console.log(`Player ${sessionID} disconnected`);
     io.of("/host").emit("player-disconnected", sessionID);
   });
