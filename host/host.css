@@ -127,3 +127,6 @@ input:focus {
 
 }
 
+#startgame-vcnv {
+    display: none !important;
+}

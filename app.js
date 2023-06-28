@@ -38,13 +38,12 @@ io.of("/host").on("connection", (socket) => {
   console.log(`Host ${socket.id} connected`);
 
   socket.on("game-event", (gameStatus) => {
-    if (gameStatus != "stop") {
-      if (!gameInProgress)
-        io.of("/player").emit("game-event", gameStatus);
-      startTime = new Date(); // starts clock
+    if (gameStatus == "stop") {
+      io.of("/player").emit("game-event", "stop");
     }
     else {
-      io.of("/player").emit("game-event", "stop");
+      io.of("/player").emit("game-event", gameStatus);
+      startTime = new Date(); // starts clock
     }
   })
   

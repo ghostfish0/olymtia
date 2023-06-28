@@ -20,7 +20,6 @@ socket.on("player-connected", (playerID, playername) => {
         id: playerID,
         position: (players[playerID] === undefined ? Object.keys(players).length + 1 : players[playerID].position),
     }
-    console.log(players[playerID].position);
     const playerNametag = document.getElementById("player-" + players[playerID].position + "-name");
     playerNametag.innerHTML = playername;
     
@@ -28,44 +27,44 @@ socket.on("player-connected", (playerID, playername) => {
 
 
 const playerUpdate = (playerData) => {
-    console.log(playerData, gameStatus);
     if (gameStatus == "vcnv" && playerData.ans == "") {
-        console.log("bell rung");
         socket.removeAllListeners("player-update");
         socket.emit("game-event", "stop");
         document.getElementById("player-" + players[playerData.id].position + "-answer").innerHTML = "CHUÔNG 🔔";
         return;
     }   
+    players[playerData.id].ans = playerData.ans;
+    players[playerData.id].time = playerData.time;
     if (highlightedPlayer == players[playerData.id].position) {
-        document.getElementById("player-" + highlightedPlayer + "-answer").style.fontStyle = "normal";
         const minTimePlayer = Object.values(players).reduce((prev, curr) => prev.time < curr.time ? prev : curr);
-        highlightedPlayer = minTimePlayer.position;       
+        console.log(minTimePlayer, Object.values(players));
+        if (highlightedPlayer != minTimePlayer.position) {
+            document.getElementById("player-" + highlightedPlayer + "-answer").style.fontStyle = "normal";
+            highlightedPlayer = minTimePlayer.position;       
+        }  
     }
     if (highlightedPlayer == 0) {
         if (gameStatus == "spam") {
+            document.getElementById("player-" + players[playerData.id].position + "-answer").innerHTML = "CHUÔNG 🔔";
             socket.removeAllListeners("player-update");
             gameStatus = "stopped";
             setTimeout(() => {
                 socket.emit("game-event", "stop");
-                }, 1000);
+            }, 1000);
             return;
         }
-
         else {
             highlightedPlayer = players[playerData.id].position;
         }
     }
-    if (!highlightedPlayer)
+    if (highlightedPlayer != 0)
         document.getElementById("player-" + highlightedPlayer + "-answer").style.fontStyle = "italic";
-
-    players[playerData.id].ans = playerData.ans;
-    players[playerData.id].time = playerData.time;
+    console.log(highlightedPlayer);
+    
     document.getElementById("player-" + players[playerData.id].position + "-time").innerHTML = players[playerData.id].time;
     document.getElementById("player-" + players[playerData.id].position + "-answer").innerHTML = players[playerData.id].ans;
         
 }
-
-socket.on("player-update", playerUpdate);
 
 socket.on("player-disconnected", (ID) => {
     if (players[ID]) {
@@ -109,7 +108,6 @@ document.getElementById("startgame-vcnv").addEventListener("click", () => {
     highlightedPlayer = 0;
 });
 document.getElementById("stopgame").addEventListener("click", () => {
-    console.log("stopgame");
     socket.removeAllListeners("player-update");
     socket.emit("game-event", "stop");
     gameStatus = "stopped";

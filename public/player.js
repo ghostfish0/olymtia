@@ -10,7 +10,6 @@ const socket = io("/player",
   {
     transports: ["websocket"],
     autoConnect: false,
-
   }
 );
 
