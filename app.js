@@ -32,7 +32,6 @@ const randomId = () => require("crypto").randomBytes(8).toString("hex");
 
 const players = {};
 let startTime = new Date();
-let gameInProgress = false;
 
 //Host socket configuration
 io.of("/host").on("connection", (socket) => {
@@ -40,15 +39,12 @@ io.of("/host").on("connection", (socket) => {
 
   socket.on("game-event", (gameStatus) => {
     if (gameStatus != "stop") {
-      if (!gameInProgress) {
+      if (!gameInProgress)
         io.of("/player").emit("game-event", gameStatus);
-        gameInProgress = true;
-      }
       startTime = new Date(); // starts clock
     }
     else {
       io.of("/player").emit("game-event", "stop");
-      gameInProgress = false;
     }
   })
   
